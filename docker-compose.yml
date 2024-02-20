@@ -14,11 +14,13 @@ services:
       - MYSQL_USER=sql6685110
       - MYSQL_PASSWORD=5zI79e5Acf
       - MYSQL_DB=sql6685110
-      - SOLR_HOST=localhost
+      - SOLR_HOST=solr
       - SOLR_PORT=8983
       - SOLR_CORE=mycore
     depends_on:
       - solr
+    networks:
+      - host
   solr:
     image: solr:latest
     ports:
@@ -28,8 +30,14 @@ services:
     command: >
       bash -c "
       rm -rf /var/solr/data/mycore &&
+      if [ ! -f /opt/solr/server/solr/configsets/mycore_conf/conf/schema.xml ]; then
+          cp /opt/solr/server/solr/configsets/mycore_conf/conf/schema.xml /opt/solr/server/solr/configsets/mycore_conf/conf/;
+      fi &&
       exec solr-foreground &
       sleep 5 &&
       bin/solr create -c mycore -d mycore_conf && wait
       "
-
+    networks:
+      - host
+networks:
+  host:
