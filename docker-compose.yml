@@ -17,7 +17,6 @@ services:
       - SOLR_HOST=localhost
       - SOLR_PORT=8983
       - SOLR_CORE=mycore
-    network_mode: "host"
     depends_on:
       - solr
   solr:
